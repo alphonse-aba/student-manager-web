@@ -3,43 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Manager V4 - Web Pro</title>
+    <title>Student Manager V4 - Moyennes</title>
 </head>
 <body style="background-color: #f0f2f5; font-family: Arial, sans-serif; text-align: center; padding-top: 50px;">
     
-    <h1 style="color: #1877f2;">Gestionnaire d'Étudiants 🇹🇬</h1>
+    <h1 style="color: #1877f2;">Gestionnaire d'Étudiants & Moyennes 🇹🇬</h1>
+    <a href="/logout" style="float: right; color: red; font-weight: bold; text-decoration: none;">Déconnexion</a>
+
     
     <!-- Formulaire d'inscription -->
     <form action="/" method="POST" style="margin: 20px 0;">
-        <input type="text" name="prenom" placeholder="Nom de l'étudiant" required 
-               style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
-        <button type="submit" 
-                style="padding: 10px 20px; font-size: 16px; background-color: #00a400; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            Inscrire l'étudiant
-        </button>
+        <input type="text" name="prenom" placeholder="Nom de l'étudiant" required style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
+        <button type="submit" style="padding: 10px 20px; font-size: 16px; background-color: #00a400; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Inscrire l'étudiant</button>
     </form>
 
-    <h2 style="color: #333; margin-top: 40px;">Liste des étudiants inscrits :</h2>
+    <h2 style="color: #333; margin-top: 40px;">Tableau de bord :</h2>
     
-    <!-- Zone d'affichage de la liste -->
-    <ul style="list-style-type: none; padding: 0; max-width: 450px; margin: 0 auto;">
+    <ul style="list-style-type: none; padding: 0; max-width: 500px; margin: 0 auto;">
         {% for etudiant in etudiants %}
-            <li style="background: white; padding: 12px; margin-bottom: 8px; border-radius: 5px; border-left: 5px solid #1877f2; font-size: 18px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
-                <span>👤 {{ etudiant }}</span>
-                
-                <!-- Petit formulaire de suppression pour cet étudiant précis -->
-                <form action="/supprimer/{{ etudiant }}" method="POST" style="margin: 0;">
-                    <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 14px;">
-                        Supprimer
-                    </button>
+            <li style="background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border-left: 5px solid #1877f2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 18px; font-weight: bold;">👤 {{ etudiant.nom }}</span>
+                    <form action="/supprimer/{{ etudiant.nom }}" method="POST" style="margin: 0;">
+                        <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Supprimer</button>
+                        
+
+                    </form>
+                </div>
+
+                <!-- Zone des notes -->
+                <div style="margin-bottom: 5px; color: #555;">
+                    <strong>Notes :</strong> 
+                    {% if etudiant.notes %}
+                        {{ etudiant.notes | join(', ') }}
+                    {% else %}
+                        Aucune note
+                    {% endif %}
+                </div>
+
+                <!-- CALCUL ET AFFICHAGE DE LA MOYENNE -->
+                <div style="margin-bottom: 15px; font-size: 16px;">
+                    <strong>Moyenne :</strong>
+                    {% if etudiant.notes %}
+                        <!-- Formule mathématique : Somme des notes / Nombre de notes -->
+                        <span style="color: #00a400; font-weight: bold;">
+                            {{ (etudiant.notes | sum / etudiant.notes | length) | round(2) }} / 20
+                        </span>
+                    {% else %}
+                        <span style="color: #888; font-style: italic;">Pas encore de moyenne</span>
+                    {% endif %}
+                </div>
+
+                <!-- Formulaire pour ajouter une note -->
+                <form action="/ajouter_note/{{ etudiant.nom }}" method="POST" style="display: flex; gap: 5px;">
+                    <input type="number" name="note" step="0.5" min="0" max="20" placeholder="Note / 20" required style="padding: 5px; width: 80px; border: 1px solid #ccc; border-radius: 3px;">
+                    <button type="submit" style="background-color: #1877f2; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">+ Note</button>
                 </form>
             </li>
         {% endfor %}
     </ul>
-    
-    <div style="margin-top: 50px;">
-        <a href="/about" style="text-decoration: none; color: #666; font-size: 14px;">À propos de l'application</a>
-    </div>
 
 </body>
-</html>

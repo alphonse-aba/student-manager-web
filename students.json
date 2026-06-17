@@ -1,6 +1,27 @@
 [
-    "LOU",
-    "AFI",
-    "KOSSI",
-    "eli"
+    {
+        "nom": "Alphonse",
+        "notes": [
+            15,
+            18,
+            14
+        ]
+    },
+    {
+        "nom": "Lou",
+        "notes": [
+            12,
+            16
+        ]
+    },
+    {
+        "nom": "eli",
+        "notes": []
+    },
+    {
+        "nom": "oloufi",
+        "notes": [
+            12.0
+        ]
+    }
 ]
