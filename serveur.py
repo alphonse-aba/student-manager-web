@@ -1,40 +1,42 @@
-import json
-import os
+import sqlite3
 from flask import Flask, redirect, render_template, request, session, url_for
 
 app = Flask(__name__)
-app.secret_key = "cle_secrete_alphonse_2026"  # Nécessaire pour les sessions
+app.secret_key = "cle_secrete_alphonse_2026"
 
-FICHIER_DATA = "students.json"
-
-# Identifiants de connexion (en dur pour l'instant)
 ADMIN_USERNAME = "alphonse"
 ADMIN_PASSWORD = "togo2026"
 
+# =========================================================
+# BASE DE DONNÉES
+# =========================================================
 
-class Etudiant:
-    def __init__(self, nom_recu):
-        self.nom = nom_recu
-        self.notes = []
+def get_db():
+    conn = sqlite3.connect("etudiants.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
-
-def charger_les_etudiants():
-    if not os.path.exists(FICHIER_DATA):
-        return []
-    with open(FICHIER_DATA, "r", encoding="utf-8") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return []
-
-
-def sauvegarder_les_etudiants(liste):
-    with open(FICHIER_DATA, "w", encoding="utf-8") as f:
-        json.dump(liste, f, indent=4, ensure_ascii=False)
-
+def init_db():
+    conn = get_db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS etudiants (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            etudiant_id INTEGER NOT NULL,
+            valeur REAL NOT NULL,
+            FOREIGN KEY (etudiant_id) REFERENCES etudiants(id)
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 # =========================================================
-# 🔐 ROUTES LOGIN / LOGOUT (NOUVEAU)
+# LOGIN / LOGOUT
 # =========================================================
 
 @app.route("/login", methods=["GET", "POST"])
@@ -45,80 +47,97 @@ def login():
         password = request.form.get("password")
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["connecte"] = True
-            return redirect(url_for("page_accueill"))
+            return redirect(url_for("page_accueil"))
         else:
             erreur = "Identifiants incorrects."
     return render_template("login.html", erreur=erreur)
-
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
-
 # =========================================================
-# TES ROUTES EXISTANTES (protégées par le login)
+# ROUTES PRINCIPALES
 # =========================================================
 
 @app.route("/", methods=["GET", "POST"])
-def page_accueill():
+def page_accueil():
     if not session.get("connecte"):
         return redirect(url_for("login"))
 
-    liste_actuelle = charger_les_etudiants()
+    conn = get_db()
 
     if request.method == "POST":
         nom_saisi = request.form.get("prenom")
         if nom_saisi:
-            existe = any(
-                e["nom"].lower() == nom_saisi.lower() for e in liste_actuelle
-            )
+            existe = conn.execute(
+                "SELECT * FROM etudiants WHERE LOWER(nom) = LOWER(?)",
+                (nom_saisi,)
+            ).fetchone()
             if not existe:
-                nouvel_objet = Etudiant(nom_saisi)
-                donnees_etudiant = {
-                    "nom": nouvel_objet.nom,
-                    "notes": nouvel_objet.notes,
-                }
-                liste_actuelle.append(donnees_etudiant)
-                sauvegarder_les_etudiants(liste_actuelle)
+                conn.execute(
+                    "INSERT INTO etudiants (nom) VALUES (?)",
+                    (nom_saisi,)
+                )
+                conn.commit()
 
-    return render_template("index.html", etudiants=liste_actuelle)
+    # Récupérer tous les étudiants avec leurs notes
+    etudiants = conn.execute("SELECT * FROM etudiants").fetchall()
+    
+    liste = []
+    for e in etudiants:
+        notes = conn.execute(
+            "SELECT valeur FROM notes WHERE etudiant_id = ?",
+            (e["id"],)
+        ).fetchall()
+        valeurs = [n["valeur"] for n in notes]
+        liste.append({
+            "id": e["id"],
+            "nom": e["nom"],
+            "notes": valeurs
+        })
+
+    conn.close()
+    return render_template("index.html", etudiants=liste)
 
 
-@app.route("/ajouter_note/<nom>", methods=["POST"])
-def ajouter_note(nom):
+@app.route("/ajouter_note/<int:id>", methods=["POST"])
+def ajouter_note(id):
     if not session.get("connecte"):
         return redirect(url_for("login"))
 
-    liste_actuelle = charger_les_etudiants()
     note_saisie = request.form.get("note")
-
     if note_saisie:
         try:
             note_float = float(note_saisie)
             if 0 <= note_float <= 20:
-                for etudiant in liste_actuelle:
-                    if etudiant["nom"] == nom:
-                        etudiant["notes"].append(note_float)
-                        break
-                sauvegarder_les_etudiants(liste_actuelle)
+                conn = get_db()
+                conn.execute(
+                    "INSERT INTO notes (etudiant_id, valeur) VALUES (?, ?)",
+                    (id, note_float)
+                )
+                conn.commit()
+                conn.close()
         except ValueError:
             pass
 
     return redirect("/")
 
 
-@app.route("/supprimer/<nom>", methods=["POST"])
-def supprimer_etudiant(nom):
+@app.route("/supprimer/<int:id>", methods=["POST"])
+def supprimer_etudiant(id):
     if not session.get("connecte"):
         return redirect(url_for("login"))
 
-    liste_actuelle = charger_les_etudiants()
-    liste_nettoyee = [e for e in liste_actuelle if e["nom"] != nom]
-    sauvegarder_les_etudiants(liste_nettoyee)
+    conn = get_db()
+    conn.execute("DELETE FROM notes WHERE etudiant_id = ?", (id,))
+    conn.execute("DELETE FROM etudiants WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
     return redirect("/")
 
 
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True)

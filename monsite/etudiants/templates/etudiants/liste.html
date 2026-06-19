@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionnaire d'Étudiants</title>
+</head>
+<body style="background-color: #f0f2f5; font-family: Arial, sans-serif; text-align: center; padding-top: 50px;">
+
+    <h1 style="color: #1877f2;">Gestionnaire d'Étudiants 🇹🇬</h1>
+
+    <form action="{% url 'ajouter' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="nom" placeholder="Nom de l'étudiant" required
+            style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
+        <button type="submit"
+            style="padding: 10px 20px; font-size: 16px; background-color: #00a400; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Inscrire
+        </button>
+    </form>
+
+    <h2 style="color: #333; margin-top: 40px;">Tableau de bord :</h2>
+
+    <ul style="list-style-type: none; padding: 0; max-width: 500px; margin: 0 auto;">
+        {% for etudiant in etudiants %}
+        <li style="background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border-left: 5px solid #1877f2; text-align: left;">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 18px; font-weight: bold;">👤 {{ etudiant.nom }}</span>
+                <form action="{% url 'supprimer' etudiant.id %}" method="POST" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                        Supprimer
+                    </button>
+                </form>
+            </div>
+
+            <div style="margin-bottom: 5px; color: #555;">
+                <strong>Notes :</strong>
+                {% if etudiant.note_set.all %}
+                    {% for note in etudiant.note_set.all %}
+                        {{ note.valeur }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Aucune note
+                {% endif %}
+            </div>
+
+            <form action="{% url 'ajouter_note' etudiant.id %}" method="POST" style="display: flex; gap: 5px; margin-top: 10px;">
+                {% csrf_token %}
+                <input type="number" name="valeur" step="0.5" min="0" max="20" placeholder="Note / 20" required
+                    style="padding: 5px; width: 80px; border: 1px solid #ccc; border-radius: 3px;">
+                <button type="submit" style="background-color: #1877f2; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                    + Note
+                </button>
+            </form>
+
+        </li>
+        {% empty %}
+        <li style="color: #888;">Aucun étudiant inscrit.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

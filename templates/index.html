@@ -12,8 +12,9 @@
 
     
     <!-- Formulaire d'inscription -->
-    <form action="/" method="POST" style="margin: 20px 0;">
-        <input type="text" name="prenom" placeholder="Nom de l'étudiant" required style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
+   <form action="/" method="POST">
+
+        <input type="text" name="prenom" placeholder="Nom de l'etudiant" required style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
         <button type="submit" style="padding: 10px 20px; font-size: 16px; background-color: #00a400; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Inscrire l'étudiant</button>
     </form>
 
@@ -24,7 +25,7 @@
             <li style="background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border-left: 5px solid #1877f2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <span style="font-size: 18px; font-weight: bold;">👤 {{ etudiant.nom }}</span>
-                    <form action="/supprimer/{{ etudiant.nom }}" method="POST" style="margin: 0;">
+                    <form action="/supprimer/{{ etudiant.id }}" method="POST">
                         <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Supprimer</button>
                         
 
@@ -55,7 +56,7 @@
                 </div>
 
                 <!-- Formulaire pour ajouter une note -->
-                <form action="/ajouter_note/{{ etudiant.nom }}" method="POST" style="display: flex; gap: 5px;">
+                <form action="/supprimer/{{ etudiant.id }}" method="POST">
                     <input type="number" name="note" step="0.5" min="0" max="20" placeholder="Note / 20" required style="padding: 5px; width: 80px; border: 1px solid #ccc; border-radius: 3px;">
                     <button type="submit" style="background-color: #1877f2; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">+ Note</button>
                 </form>
