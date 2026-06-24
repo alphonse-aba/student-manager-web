@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chapitre 11 - async/await</title>
+</head>
+<body>
+
+  <h2>Météo de Lomé</h2>
+  <button id="btnMeteo">Voir la météo</button>
+  <p id="resultat"></p>
+
+  <script>
+
+    let btn = document.querySelector("#btnMeteo");
+    let resultat = document.querySelector("#resultat");
+
+    // Fonction async
+    async function chargerMeteo() {
+        try{
+      resultat.textContent = "Chargement...";
+
+      // await attend la réponse de fetch
+      let reponse = await fetch("https://wttr.in/Lome?format=j1");
+
+      // await attend la conversion en JSON
+      let donnees = await reponse.json();
+
+      // Extraire les données
+      let temperature = donnees.current_condition[0].temp_C;
+      let description = donnees.current_condition[0].weatherDesc[0].value;
+
+      resultat.textContent = "Lomé — " + temperature + "°C | " + description;
+    }catch(erreur){
+
+    resultat.textContent = "Erreur - vérifie ta connexion ! ";
+    
+    }
+}
+btn.addEventListener("click", chargerMeteo);
+  </script>
+
+</body>
+</html>

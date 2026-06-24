@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fonctions</title>
+</head>
+<body>
+<script>
+    // 1. Fonction simple
+    function saluer(nom) {
+        return `Bonjour ${nom} !`;
+    }
+    console.log(saluer("Alphonse"));
+    console.log(saluer("Kodjo"));
+
+    // 2. Fonction avec plusieurs parametres
+    function additionner(a, b) {
+        return a + b;
+    }
+    console.log(additionner(10, 5));  // 15
+    console.log(additionner(3, 7));   // 10
+
+    // 3. Fonction avec valeur par defaut
+    function saluerVille(nom, ville = "Lome") {
+        return `${nom} vit a ${ville}`;
+    }
+    console.log(saluerVille("Alphonse"));         // Lome par defaut
+    console.log(saluerVille("Kodjo", "Kara"));    // Kara
+
+    // 4. Fonction qui calcule la moyenne
+    function calculerMoyenne(notes) {
+        let somme = 0;
+        for (const note of notes) {
+            somme = somme + note;
+        }
+        return somme / notes.length;
+    }
+
+    const mesNotes = [15, 18, 14, 12];
+    console.log(`Moyenne : ${calculerMoyenne(mesNotes)}`);
+</script>
+</body>
+</html>

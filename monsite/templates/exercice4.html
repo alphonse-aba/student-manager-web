@@ -1,0 +1,42 @@
+html<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Conditions</title>
+</head>
+<body>
+<script>
+    // if / else if / else
+    const note = 15;
+
+    if (note >= 16) {
+        console.log("Très bien !");
+    } else if (note >= 14) {
+        console.log("Bien !");
+    } else if (note >= 10) {
+        console.log("Passable !");
+    } else {
+        console.log("Echec !");
+    }
+
+    // Operateurs de comparaison
+    console.log(5 === 5);   // true
+    console.log(5 === "5"); // false - pas le meme type
+    console.log(5 !== 3);   // true - different
+    console.log(10 > 5);    // true
+    console.log(10 < 5);    // false
+
+    // Operateurs logiques
+    const age = 20;
+    const etudiant = true;
+
+    if (age >= 18 && etudiant === true) {
+        console.log("Majeur et etudiant !");
+    }
+
+    if (age < 18 || etudiant === true) {
+        console.log("Mineur ou etudiant !");
+    }
+        </script>
+    </body>
+</html>

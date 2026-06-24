@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Arrow Functions</title>
+</head>
+<body>
+<script>
+    // Fonction classique
+    function saluer(nom) {
+        return `Bonjour ${nom} !`;
+    }
+
+    // Meme fonction en arrow function
+    const saluer2 = (nom) => {
+        return `Bonjour ${nom} !`;
+    };
+
+    // Version ultra-courte (1 seule ligne)
+    const saluer3 = nom => `Bonjour ${nom} !`;
+
+    console.log(saluer("Alphonse"));   // Bonjour Alphonse !
+    console.log(saluer2("Alphonse"));  // Bonjour Alphonse !
+    console.log(saluer3("Alphonse"));  // Bonjour Alphonse !
+
+    // Arrow functions avec les tableaux
+    const notes = [15, 18, 14, 12, 8];
+
+    // map - transformer chaque element
+    const notesSur100 = notes.map(note => note * 5);
+    console.log("Notes sur 100 :", notesSur100);
+
+    // filter - garder seulement certains elements
+    const bonnesNotes = notes.filter(note => note >= 14);
+    console.log("Bonnes notes :", bonnesNotes);
+
+    // reduce - calculer la somme
+    const somme = notes.reduce((acc, note) => acc + note, 0);
+    console.log("Somme :", somme);
+    console.log("Moyenne :", somme / notes.length);
+</script>
+</body>
+</html>

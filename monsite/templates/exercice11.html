@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chapitre 11 - fetch</title>
+</head>
+<body>
+
+  <h2>Informations sur un pays</h2>
+  <button id="btnCharger">Charger les infos du Togo</button>
+  <p id="resultat"></p>
+
+  <script>
+    let btn = document.querySelector("#btnCharger");
+    let resultat = document.querySelector("#resultat");
+
+    btn.addEventListener("click", function() {
+
+      resultat.textContent = "Chargement...";
+
+      fetch("https://wttr.in/Lome?format=j1")
+        .then(function(reponse) {
+          return reponse.json();
+        })
+        .then(function(donnees) {
+          let temperature = donnees.current_condition[0].temp_C;
+          let description = donnees.current_condition[0].weatherDesc[0].value;
+          resultat.textContent = "Lomé — Température : " + temperature + "°C | Météo : " + description;
+        });
+
+    });
+  </script>
+
+</body>
+</html>

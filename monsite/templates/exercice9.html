@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Le DOM</title>
+</head>
+<body>
+    <h1 id="titre">Bonjour !</h1>
+    <p id="message">Je suis un paragraphe.</p>
+    <button id="monBouton">Clique moi !</button>
+    <input type="text" id="monInput" placeholder="Tape ton nom...">
+    <p id="resultat"></p>
+
+    <script>
+        // 1. Selectionner des elements
+        const titre = document.querySelector("#titre");
+        const message = document.querySelector("#message");
+        const bouton = document.querySelector("#monBouton");
+        const input = document.querySelector("#monInput");
+        const resultat = document.querySelector("#resultat");
+
+        // 2. Modifier le texte
+        titre.textContent = "Bienvenue Alphonse !";
+        message.textContent = "JavaScript modifie cette page !";
+
+        // 3. Modifier le style
+        titre.style.color = "#1877f2";
+        titre.style.fontSize = "32px";
+
+        // 4. Reagir au clic
+        bouton.addEventListener("click", () => {
+            const nom = input.value;
+            if (nom) {
+                resultat.textContent = `Bonjour ${nom} ! Tu apprends le DOM !`;
+                resultat.style.color = "#00a400";
+            } else {
+                resultat.textContent = "Tape ton nom d'abord !";
+                resultat.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>

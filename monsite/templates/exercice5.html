@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Exercice 5 - Boucles</title>
+</head>
+<body>
+<script>
+  const notes = [15, 18, 14, 12];
+
+  // --- boucle for ---
+  console.log("---boucle for---");
+  for (let i = 1; i <= 5; i++) {
+    console.log(`numéro ${i}`);   // ✅ backticks + ${}
+  }
+
+  // --- for...of ---
+  console.log("--- for...of ---");
+  for (let note of notes) {
+    console.log("note :", note);  // ✅ forEach PAS imbriqué ici
+  }
+
+  // --- forEach ---
+  console.log("---forEach---");
+  notes.forEach(function(note) {
+    console.log("ma note :", note);
+  });
+
+  // --- while ---
+  console.log("--while---");
+  let compteur = 0;
+  while (compteur < 5) {
+    console.log("compteur :", compteur);
+    compteur++;
+  }
+</script>
+</body>
+</html>
+

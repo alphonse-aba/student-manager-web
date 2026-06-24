@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Objets</title>
+</head>
+<body>
+<script>
+    // Créer un objet
+    const etudiant = {
+        nom: "Alphonse",
+        age: 20,
+        ville: "Lome",
+        notes: [15, 18, 14, 12]
+    };
+
+    // Acceder aux proprietes
+    console.log(etudiant.nom);     // Alphonse
+    console.log(etudiant.age);     // 20
+    console.log(etudiant.notes);   // [15, 18, 14, 12]
+
+    // Modifier une propriete
+    etudiant.age = 21;
+    console.log(`Age modifie : ${etudiant.age}`);
+
+    // Ajouter une propriete
+    etudiant.email = "alphonse@ucao.tg";
+    console.log(`Email : ${etudiant.email}`);
+
+    // Objet avec methode
+    const calculatrice = {
+        additionner(a, b) {
+            return a + b;
+        },
+        multiplier(a, b) {
+            return a * b;
+        }
+    };
+
+    console.log(calculatrice.additionner(10, 5));  // 15
+    console.log(calculatrice.multiplier(4, 3));    // 12
+
+    // Destructuring - extraire des valeurs
+    const { nom, ville } = etudiant;
+    console.log(`${nom} vit a ${ville}`);
+</script>
+</body>
+</html>

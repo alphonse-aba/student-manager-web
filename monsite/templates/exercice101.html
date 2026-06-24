@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Événements Formulaire</title>
+</head>
+<body>
+
+  <h2>Inscription</h2>
+
+  <input type="text" id="nom" placeholder="Ton nom...">
+  <input type="text" id="prenom" placeholder="Ton prénom...">
+  <input type="text" id="age" placeholder="Ton âge...">
+
+  <input type="radio" id="femme" name="sexe" value="femme">
+  <label for="femme">Femme</label>
+
+  <input type="radio" id="homme" name="sexe" value="homme">
+  <label for="homme">Homme</label>
+
+  <button id="btnInscrire">S'inscrire</button>
+  <p id="resultat"></p>
+
+  <script>
+    let nom = document.querySelector("#nom");
+    let prenom = document.querySelector("#prenom");
+    let age = document.querySelector("#age");
+    let btn = document.querySelector("#btnInscrire");
+    let resultat = document.querySelector("#resultat");
+
+    btn.addEventListener("click", function() {
+
+      let valeurNom = nom.value;
+      let valeurPrenom = prenom.value;
+      let valeurAge = age.value;
+
+      // Récupérer le sexe coché
+      let sexeCoche = document.querySelector('input[name="sexe"]:checked');
+      let valeurSexe = sexeCoche ? sexeCoche.value : "";
+
+      if (valeurNom === "" || valeurPrenom === "" || valeurAge === "" || valeurSexe === "") {
+        resultat.textContent = "Veuillez remplir tous les champs !";
+      } else {
+        resultat.textContent = "Bienvenue " + valeurPrenom + " " + valeurNom + " | Âge : " + valeurAge + " | Sexe : " + valeurSexe;
+      }
+
+    });
+  </script>
+
+</body>
+</html>

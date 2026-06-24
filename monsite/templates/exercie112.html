@@ -1,0 +1,44 @@
+  <title>Météo - Exercice Final</title>
+</head>
+<body>
+
+  <h2>Météo de la ville</h2>
+
+  <input type="text" id="ville" placeholder="Tape une ville...">
+  <button id="btnMeteo">Chercher</button>
+  <p id="resultat"></p>
+
+  <script>
+
+    let btn = document.querySelector("#btnMeteo");
+    let resultat = document.querySelector("#resultat");
+    let ville = document.querySelector("#ville");
+
+    async function chargerMeteo() {
+      let valeurVille = ville.value;
+
+      // Vérifier si le champ est vide
+      if (valeurVille === "") {
+        resultat.textContent = "Veuillez entrer une ville !";
+        return; // stopper la fonction
+      }
+
+      try {
+        resultat.textContent = "Chargement...";
+        let reponse = await fetch("https://wttr.in/" + valeurVille + "?format=j1");
+        let donnees = await reponse.json();
+        let temperature = donnees.current_condition[0].temp_C;
+        let description = donnees.current_condition[0].weatherDesc[0].value;
+        resultat.textContent = valeurVille + " — " + temperature + "°C | " + description;
+
+      } catch(erreur) {
+        resultat.textContent = "Erreur - vérifie ta connexion !";
+      }
+    }
+
+    btn.addEventListener("click", chargerMeteo);
+
+  </script>
+
+</body>
+</html>

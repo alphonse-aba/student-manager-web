@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon App Météo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 50px auto;
+      text-align: center;
+    }
+
+    #carte {
+      background-color: #f0f8ff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    #historique {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .ville-historique {
+      cursor: pointer;
+      color: blue;
+      margin: 5px 0;
+    }
+
+    .ville-historique:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌤️ App Météo</h1>
+
+  <input type="text" id="ville" placeholder="Entrez une ville...">
+  <button id="btnChercher">Chercher</button>
+
+  <p id="erreur" style="color: red;"></p>
+
+  <div id="carte">
+    <h2 id="nomVille"></h2>
+    <p id="temperature"></p>
+    <p id="description"></p>
+    <p id="humidite"></p>
+  </div>
+
+  <div id="historique">
+    <h3>Dernières recherches</h3>
+    <div id="listeHistorique"></div>
+  </div>
+
+  <script>
+    // On écrira le JavaScript ici
+    let btn = document.querySelector("#btnChercher");
+let ville = document.querySelector("#ville");
+let erreur = document.querySelector("#erreur");
+let carte = document.querySelector("#carte");
+let nomVille = document.querySelector("#nomVille");
+let temperature = document.querySelector("#temperature");
+let description = document.querySelector("#description");
+let humidite = document.querySelector("#humidite");
+let listeHistorique = document.querySelector("#listeHistorique");
+
+// Historique des villes
+let historique = JSON.parse(localStorage.getItem("historique")) || [] ;
+
+async function chercherMeteo(nomDeVille) {
+  erreur.textContent = "";
+
+  if (nomDeVille === "") {
+    erreur.textContent = "Veuillez entrer une ville !";
+    return;
+  }
+
+  try {
+    carte.style.display = "none";
+    let reponse = await fetch("https://wttr.in/" + nomDeVille + "?format=j1");
+    let donnees = await reponse.json();
+
+    // Afficher les données
+    nomVille.textContent = "📍 " + nomDeVille;
+    temperature.textContent = "🌡️ Température : " + donnees.current_condition[0].temp_C + "°C";
+    description.textContent = "☁️ Météo : " + donnees.current_condition[0].weatherDesc[0].value;
+    humidite.textContent = "💧 Humidité : " + donnees.current_condition[0].humidity + "%";
+    changerCouleur(donnees.current_condition[0].temp_C);
+
+    // Afficher la carte
+    carte.style.display = "block";
+
+    // Ajouter à l'historique
+    ajouterHistorique(nomDeVille);
+
+  } catch(erreurFetch) {
+    erreur.textContent = "Erreur - vérifie ta connexion !";
+  }
+}
+
+function ajouterHistorique(nomDeVille) {
+  if (!historique.includes(nomDeVille)) {
+    historique.unshift(nomDeVille);
+    if (historique.length > 5) {
+      historique.pop();
+    }
+    localStorage.setItem("historique", JSON.stringify(historique));
+    afficherHistorique();
+  }
+} // ← ferme ajouterHistorique ici
+
+// changerCouleur EN DEHORS
+function changerCouleur(temp) {
+  let tempNumber = parseInt(temp);
+
+  if (tempNumber < 15) {
+    document.body.style.backgroundColor = "#cce5ff";
+  } else if (tempNumber <= 30) {
+    document.body.style.backgroundColor = "#fff3cd";
+  } else {
+    document.body.style.backgroundColor = "#ffcccc";
+  }
+}
+
+
+function afficherHistorique() {
+  listeHistorique.innerHTML = "";
+  historique.forEach(function(ville) {
+    let p = document.createElement("p");
+    p.textContent = "🔍 " + ville;
+    p.classList.add("ville-historique");
+    p.addEventListener("click", function() {
+      chercherMeteo(ville);
+    });
+    listeHistorique.appendChild(p);
+  });
+}
+
+btn.addEventListener("click", function() {
+  chercherMeteo(ville.value);
+});
+
+// Chercher avec la touche Entrée
+ville.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    chercherMeteo(ville.value);
+  }
+});
+afficherHistorique();
+  </script>
+
+</body>
+</html>
