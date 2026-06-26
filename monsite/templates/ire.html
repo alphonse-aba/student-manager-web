@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlateforme - Connexion & Inscription</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .toggle-text span {
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-box">
+        <h2>Connexion</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Adresse Email</label>
+                <input type="email" id="login-email" required placeholder="exemple@univ.tg">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Mot de passe</label>
+                <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p class="toggle-text">Pas encore de compte ? <span onclick="toggleForms()">S'inscrire</span></p>
+    </div>
+
+    <div id="register-box" class="hidden">
+        <h2>Inscription</h2>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="reg-name">Nom complet</label>
+                <input type="text" id="reg-name" required placeholder="Votre nom">
+            </div>
+            <div class="form-group">
+                <label for="reg-email">Adresse Email</label>
+                <input type="email" id="reg-email" required placeholder="exemple@univ.tg">
+            </div>
+            <div class="form-group">
+                <label for="reg-role">Vous êtes :</label>
+                <select id="reg-role" required>
+                    <option value="etudiant">Étudiant / Élève</option>
+                    <option value="professeur">Professeur</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Mot de passe</label>
+                <input type="password" id="reg-password" required placeholder="••••••••">
+            </div>
+            <button type="submit">Créer mon compte</button>
+        </form>
+        <p class="toggle-text">Déjà inscrit ? <span onclick="toggleForms()">Se connecter</span></p>
+    </div>
+</div>
+
+<script>
+    // Fonction simple pour basculer entre connexion et inscription
+    function toggleForms() {
+        document.getElementById('login-box').classList.toggle('hidden');
+        document.getElementById('register-box').classList.toggle('hidden');
+    }
+
+    // Simulation de la logique pour l'instant
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Connexion en cours... Prochaine étape : lier la base de données !');
+    });
+
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const role = document.getElementById('reg-role').value;
+        alert('Inscription réussie en tant que : ' + role + '. Prochaine étape : lier la base de données !');
+    });
+</script>
+
+</body>
+</html>
