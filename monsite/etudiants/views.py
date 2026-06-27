@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 from .models import Etudiant, Note
 from .serializers import EtudiantSerializer
 import json
@@ -62,7 +63,7 @@ def api_supprimer(request, id):
         return JsonResponse({"success": True})
     return JsonResponse({"success": False})
 
-# ← Nouvelles API avec DRF
+# Nouvelles API avec DRF
 @api_view(['GET'])
 def drf_liste(request):
     etudiants = Etudiant.objects.all()
@@ -71,6 +72,8 @@ def drf_liste(request):
 
 @api_view(['POST'])
 def drf_ajouter(request):
+    if not request.user.is_authenticated:
+        return Response({"error": "Non autorisé !"}, status=401)
     serializer = EtudiantSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -79,6 +82,8 @@ def drf_ajouter(request):
 
 @api_view(['DELETE'])
 def drf_supprimer(request, id):
+    if not request.user.is_authenticated:
+        return Response({"error": "Non autorisé !"}, status=401)
     etudiant = Etudiant.objects.get(id=id)
     etudiant.delete()
     return Response({"success": True})

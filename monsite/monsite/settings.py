@@ -74,3 +74,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://react-etudiants.vercel.app",
 ]
+# JWT Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
