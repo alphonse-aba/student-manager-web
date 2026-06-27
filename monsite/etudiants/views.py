@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import Etudiant, Note
+from .serializers import EtudiantSerializer
 import json
 
+# Vue HTML classique
 def liste(request):
     etudiants = Etudiant.objects.all()
     return render(request, "etudiants/liste.html", {"etudiants": etudiants})
@@ -28,6 +33,7 @@ def ajouter_note(request, id):
             Note.objects.create(etudiant=etudiant, valeur=float(valeur))
     return redirect("liste")
 
+# Anciennes API
 def api_etudiants(request):
     etudiants = Etudiant.objects.all()
     data = []
@@ -47,6 +53,7 @@ def api_ajouter(request):
             etudiant = Etudiant.objects.create(nom=nom)
             return JsonResponse({"success": True, "id": etudiant.id, "nom": etudiant.nom})
     return JsonResponse({"success": False})
+
 @csrf_exempt
 def api_supprimer(request, id):
     if request.method == "DELETE":
@@ -54,3 +61,24 @@ def api_supprimer(request, id):
         etudiant.delete()
         return JsonResponse({"success": True})
     return JsonResponse({"success": False})
+
+# ← Nouvelles API avec DRF
+@api_view(['GET'])
+def drf_liste(request):
+    etudiants = Etudiant.objects.all()
+    serializer = EtudiantSerializer(etudiants, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def drf_ajouter(request):
+    serializer = EtudiantSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)
+
+@api_view(['DELETE'])
+def drf_supprimer(request, id):
+    etudiant = Etudiant.objects.get(id=id)
+    etudiant.delete()
+    return Response({"success": True})
